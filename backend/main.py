@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
 from api.routes import router as api_router
+from db.document_store import DocumentStore
+
+DocumentStore.init_db()
 
 app = FastAPI(title=settings.PROJECT_NAME)
 

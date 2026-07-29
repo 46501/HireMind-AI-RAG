@@ -1,8 +1,10 @@
 import uuid
 import logging
+import os
 from typing import Any
 from services.llm_service import LLMService
 from db.chroma_client import ChromaDBService
+from db.document_store import DocumentStore
 from utils.chunking import ChunkingService
 from utils.document_parser import DocumentParser
 
@@ -14,47 +16,61 @@ logger = logging.getLogger(__name__)
 class RAGService:
     @staticmethod
     def is_document_uploaded(filename: str) -> bool:
-        """Check if a document is already uploaded."""
-        return ChromaDBService.check_document_exists(KNOWLEDGE_BASE_COLLECTION, filename)
+        """Check if a document is already uploaded in DB."""
+        return DocumentStore.get_document_by_filename(filename) is not None
 
     @staticmethod
-    def process_and_store_document(file_bytes: bytes, filename: str, category: str = "general"):
-        """Process document and store its chunks in ChromaDB."""
+    def process_and_store_document(file_bytes: bytes, filename: str, category: str = "general", file_path: str = "", file_size: int = 0):
+        """Process document and store its chunks in ChromaDB, and metadata in SQLite."""
         logger.info(f"Processing document: {filename}")
         
-        # 1. Parse document
-        text = DocumentParser.parse_file(file_bytes, filename)
-        if not text:
-            logger.error(f"Extracted text is empty for {filename}")
-            raise ValueError("Extracted text is empty. File may be corrupted or contains no readable text.")
+        # Add to Document Store (status: processing)
+        doc_id = str(uuid.uuid4())
+        DocumentStore.add_document(doc_id, filename, file_path, file_size, category, status="processing")
         
-        # 2. Chunk text
-        chunks = ChunkingService.chunk_text(text)
-        
-        if not chunks:
-            logger.error(f"No valid text chunks could be created for {filename}")
-            raise ValueError("No valid text chunks could be created from the document.")
+        try:
+            # 1. Parse document
+            text = DocumentParser.parse_file(file_bytes, filename)
+            if not text:
+                logger.error(f"Extracted text is empty for {filename}")
+                raise ValueError("Extracted text is empty. File may be corrupted or contains no readable text.")
             
-        logger.info(f"Generated {len(chunks)} chunks for {filename}. Generating embeddings...")
-        
-        # 3. Generate embeddings
-        embeddings = LLMService.get_embeddings(chunks)
-        
-        # 4. Prepare metadata and ids
-        ids = [str(uuid.uuid4()) for _ in chunks]
-        metadatas = [{"filename": filename, "category": category, "chunk_index": i} for i in range(len(chunks))]
-        
-        # 5. Store in ChromaDB
-        ChromaDBService.add_documents(
-            collection_name=KNOWLEDGE_BASE_COLLECTION,
-            ids=ids,
-            embeddings=embeddings,
-            metadatas=metadatas,
-            documents=chunks
-        )
-        
-        logger.info(f"Successfully stored {len(chunks)} chunks for {filename} in ChromaDB.")
-        return len(chunks)
+            # 2. Chunk text
+            chunks = ChunkingService.chunk_text(text)
+            
+            if not chunks:
+                logger.error(f"No valid text chunks could be created for {filename}")
+                raise ValueError("No valid text chunks could be created from the document.")
+                
+            logger.info(f"Generated {len(chunks)} chunks for {filename}. Generating embeddings...")
+            
+            # 3. Generate embeddings
+            embeddings = LLMService.get_embeddings(chunks)
+            
+            # 4. Prepare metadata and ids
+            ids = [f"{doc_id}_{i}" for i in range(len(chunks))]
+            metadatas = [{"filename": filename, "category": category, "chunk_index": i} for i in range(len(chunks))]
+            
+            # 5. Store in ChromaDB
+            ChromaDBService.add_documents(
+                collection_name=KNOWLEDGE_BASE_COLLECTION,
+                ids=ids,
+                embeddings=embeddings,
+                metadatas=metadatas,
+                documents=chunks
+            )
+            
+            logger.info(f"Successfully stored {len(chunks)} chunks for {filename} in ChromaDB.")
+            
+            # Update Document Store (status: indexed)
+            DocumentStore.update_document(filename, chunks=len(chunks), status="indexed")
+            
+            return len(chunks)
+        except Exception as e:
+            logger.error(f"Error processing document {filename}: {e}")
+            # Update Document Store (status: error)
+            DocumentStore.update_document(filename, chunks=0, status="error")
+            raise
 
     @staticmethod
     def query_knowledge_base(query: str, n_results: int = 3):
@@ -102,27 +118,26 @@ User Question: {query}
 
     @staticmethod
     def get_uploaded_documents():
-        """Get a list of unique uploaded documents from ChromaDB."""
-        results = ChromaDBService.get_all_documents(KNOWLEDGE_BASE_COLLECTION)
-        metadatas = results.get('metadatas', [])
-        
-        unique_docs = {}
-        for meta in metadatas:
-            if not meta:
-                continue
-            filename = meta.get('filename')
-            if filename and filename not in unique_docs:
-                unique_docs[filename] = {
-                    "filename": filename,
-                    "category": meta.get('category', 'general'),
-                    "chunks": 1
-                }
-            elif filename:
-                unique_docs[filename]['chunks'] += 1
-                
-        return list(unique_docs.values())
+        """Get a list of uploaded documents from DocumentStore."""
+        return DocumentStore.get_all_documents()
 
     @staticmethod
     def delete_document(filename: str):
         """Delete a document and its chunks by filename."""
-        return ChromaDBService.delete_documents_by_filename(KNOWLEDGE_BASE_COLLECTION, filename)
+        doc = DocumentStore.get_document_by_filename(filename)
+        
+        # 1. Delete from ChromaDB
+        ChromaDBService.delete_documents_by_filename(KNOWLEDGE_BASE_COLLECTION, filename)
+        
+        # 2. Delete from Document Store
+        DocumentStore.delete_document(filename)
+        
+        # 3. Delete physical file
+        if doc and doc.get("path") and os.path.exists(doc["path"]):
+            try:
+                os.remove(doc["path"])
+                logger.info(f"Deleted file from disk: {doc['path']}")
+            except Exception as e:
+                logger.error(f"Error deleting file {doc['path']}: {e}")
+                
+        return True

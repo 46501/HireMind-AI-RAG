@@ -47,7 +47,13 @@ async def upload_knowledge(file: UploadFile = File(...), category: str = Form("g
         logger.info(f"File saved to disk at {file_path}")
 
         # Process and store
-        chunks_stored = RAGService.process_and_store_document(contents, file.filename, category)
+        chunks_stored = RAGService.process_and_store_document(
+            contents, 
+            file.filename, 
+            category, 
+            file_path=file_path, 
+            file_size=file.size if file.size else len(contents)
+        )
         return {"message": "Document processed successfully", "chunks": chunks_stored, "filename": file.filename}
     except ValueError as ve:
         logger.error(f"Validation error during upload: {ve}")
