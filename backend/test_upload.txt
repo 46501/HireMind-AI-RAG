@@ -1,1 +1,1 @@
-This is a test document for the CareerPilot AI.
+This is a dummy resume text. Software Engineer with 10 years experience.

@@ -80,15 +80,26 @@ async def analyze_resume(resume: UploadFile = File(...), jd: Optional[UploadFile
         resume_bytes = await resume.read()
         resume_text = DocumentParser.parse_file(resume_bytes, resume.filename)
         
+        if not resume_text:
+            return {"error": "Could not extract readable text from the resume. Please try a different PDF or DOCX file."}
+        
         jd_text = None
         if jd:
             jd_bytes = await jd.read()
             jd_text = DocumentParser.parse_file(jd_bytes, jd.filename)
             
         analysis = ResumeService.analyze_resume(resume_text, jd_text)
+        
+        if "error" in analysis:
+            return analysis
+            
         return analysis
+    except ValueError as ve:
+        logger.error(f"Validation error in analyze_resume: {ve}")
+        return {"error": str(ve)}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in analyze_resume: {e}")
+        return {"error": str(e)}
 
 @router.post("/roadmap")
 async def generate_roadmap(request: RoadmapRequest):
