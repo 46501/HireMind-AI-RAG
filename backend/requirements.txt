@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+google-generativeai
+chromadb
+python-multipart
+PyPDF2
+python-docx
