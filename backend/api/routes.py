@@ -158,6 +158,14 @@ async def generate_interview(request: InterviewRequest):
     """Generate interview prep questions."""
     try:
         result = ResumeService.generate_interview_questions(request.company, request.role, request.difficulty)
+        
+        if "error" in result:
+            return result
+            
         return result
+    except ValueError as ve:
+        logger.error(f"Validation error in generate_interview: {ve}")
+        return {"error": str(ve)}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in generate_interview: {e}")
+        return {"error": "An unexpected error occurred while generating interview questions."}
