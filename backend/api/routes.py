@@ -64,11 +64,22 @@ async def upload_knowledge(file: UploadFile = File(...), category: str = Form("g
         logger.error(f"Internal server error during upload: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An internal error occurred: {str(e)}")
 
+from db.chat_store import ChatStore
+
 @router.post("/chat")
 async def chat_with_knowledge(request: ChatRequest):
     """Chat with the AI using RAG context."""
     try:
+        # Save user message
+        ChatStore.add_message(role="user", content=request.query)
+        
+        # Get AI response
         result = RAGService.query_knowledge_base(request.query)
+        
+        # Save AI message
+        if "error" not in result:
+            ChatStore.add_message(role="ai", content=result.get("answer", ""), sources=result.get("sources", []))
+            
         return result
     except ValueError as ve:
         logger.error(f"Validation error in chat_with_knowledge: {ve}")
@@ -76,6 +87,28 @@ async def chat_with_knowledge(request: ChatRequest):
     except Exception as e:
         logger.error(f"Error in chat_with_knowledge: {e}")
         return {"error": "An unexpected error occurred while processing your request."}
+
+@router.get("/chat/history")
+async def get_chat_history():
+    """Get the full chat history."""
+    try:
+        history = ChatStore.get_all_messages()
+        return {"history": history}
+    except Exception as e:
+        logger.error(f"Error fetching chat history: {e}")
+        return {"error": str(e)}
+
+@router.delete("/chat/history")
+async def clear_chat_history():
+    """Clear the chat history."""
+    try:
+        success = ChatStore.clear_messages()
+        if success:
+            return {"message": "Chat history cleared successfully."}
+        return {"error": "Failed to clear chat history."}
+    except Exception as e:
+        logger.error(f"Error clearing chat history: {e}")
+        return {"error": str(e)}
 
 @router.post("/analyze/resume")
 async def analyze_resume(resume: UploadFile = File(...), jd: Optional[UploadFile] = File(None)):

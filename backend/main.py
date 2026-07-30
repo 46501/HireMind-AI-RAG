@@ -3,8 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
 from api.routes import router as api_router
 from db.document_store import DocumentStore
+from db.chat_store import ChatStore
 
 DocumentStore.init_db()
+ChatStore.init_db()
 
 app = FastAPI(title=settings.PROJECT_NAME)
 

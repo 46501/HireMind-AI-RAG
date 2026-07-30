@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Loader2, Sparkles, BookOpen } from "lucide-react";
-import { chatWithKB } from "../services/api";
+import { Send, Bot, User, Loader2, Sparkles, BookOpen, Trash2 } from "lucide-react";
+import { chatWithKB, getChatHistory, clearChatHistory } from "../services/api";
 
 interface Message {
     role: "user" | "ai";
@@ -12,6 +12,7 @@ export const Chat = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isFetchingHistory, setIsFetchingHistory] = useState(true);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -19,8 +20,38 @@ export const Chat = () => {
     };
 
     useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                const data = await getChatHistory();
+                if (data.history) {
+                    setMessages(data.history);
+                }
+            } catch (error) {
+                console.error("Failed to load chat history:", error);
+            } finally {
+                setIsFetchingHistory(false);
+            }
+        };
+        fetchHistory();
+    }, []);
+
+    useEffect(() => {
         scrollToBottom();
-    }, [messages]);
+    }, [messages, isFetchingHistory]);
+
+    const handleClearChat = async () => {
+        if (messages.length === 0) return;
+        
+        if (window.confirm("Are you sure you want to clear this conversation?")) {
+            try {
+                await clearChatHistory();
+                setMessages([]);
+            } catch (error) {
+                console.error("Failed to clear chat history:", error);
+                alert("Failed to clear chat history. Please try again.");
+            }
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -60,18 +91,33 @@ export const Chat = () => {
 
     return (
         <div className="h-full flex flex-col gap-4">
-            <header>
-                <h1 className="text-3xl font-bold flex items-center gap-3">
-                    <Sparkles className="text-primary" size={32} /> AI Career Coach
-                </h1>
-                <p className="text-muted-foreground mt-2">Ask questions based on your uploaded knowledge base documents.</p>
+            <header className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold flex items-center gap-3">
+                        <Sparkles className="text-primary" size={32} /> AI Career Coach
+                    </h1>
+                    <p className="text-muted-foreground mt-2">Ask questions based on your uploaded knowledge base documents.</p>
+                </div>
+                <button
+                    onClick={handleClearChat}
+                    disabled={messages.length === 0 || isFetchingHistory}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-xl transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Trash2 size={18} />
+                    Clear Chat
+                </button>
             </header>
 
             <div className="flex-1 glass rounded-3xl border border-border overflow-hidden flex flex-col relative">
                 
                 {/* Chat History */}
                 <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
-                    {messages.length === 0 ? (
+                    {isFetchingHistory ? (
+                        <div className="h-full flex flex-col items-center justify-center text-center opacity-50">
+                            <Loader2 size={48} className="mb-4 text-primary animate-spin" />
+                            <p className="font-medium">Loading conversation...</p>
+                        </div>
+                    ) : messages.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center opacity-50">
                             <Bot size={64} className="mb-4 text-primary" />
                             <h2 className="text-2xl font-bold mb-2">How can I help you today?</h2>
@@ -124,11 +170,11 @@ export const Chat = () => {
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask a question about your documents..."
                             className="flex-1 bg-white dark:bg-black/40 border border-border rounded-xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                            disabled={isLoading}
+                            disabled={isLoading || isFetchingHistory}
                         />
                         <button
                             type="submit"
-                            disabled={isLoading || !input.trim()}
+                            disabled={isLoading || isFetchingHistory || !input.trim()}
                             className="bg-primary text-white p-4 rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                         >
                             <Send size={24} />
