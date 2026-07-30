@@ -70,8 +70,12 @@ async def chat_with_knowledge(request: ChatRequest):
     try:
         result = RAGService.query_knowledge_base(request.query)
         return result
+    except ValueError as ve:
+        logger.error(f"Validation error in chat_with_knowledge: {ve}")
+        return {"error": str(ve)}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in chat_with_knowledge: {e}")
+        return {"error": "An unexpected error occurred while processing your request."}
 
 @router.post("/analyze/resume")
 async def analyze_resume(resume: UploadFile = File(...), jd: Optional[UploadFile] = File(None)):
@@ -106,9 +110,17 @@ async def generate_roadmap(request: RoadmapRequest):
     """Generate career roadmap based on skills."""
     try:
         roadmap = ResumeService.generate_roadmap(request.skills, request.target_role)
+        
+        if "error" in roadmap:
+            return roadmap
+            
         return roadmap
+    except ValueError as ve:
+        logger.error(f"Validation error in generate_roadmap: {ve}")
+        return {"error": str(ve)}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in generate_roadmap: {e}")
+        return {"error": "An unexpected error occurred while generating the roadmap."}
 
 @router.get("/status")
 async def get_system_status():

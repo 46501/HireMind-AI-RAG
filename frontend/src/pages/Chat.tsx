@@ -33,16 +33,25 @@ export const Chat = () => {
 
         try {
             const res = await chatWithKB(userMsg);
-            setMessages(prev => [...prev, { 
-                role: "ai", 
-                content: res.answer,
-                sources: res.sources
-            }]);
-        } catch (error) {
+            
+            if (res.error) {
+                setMessages(prev => [...prev, { 
+                    role: "ai", 
+                    content: `Error: ${res.error}` 
+                }]);
+            } else {
+                setMessages(prev => [...prev, { 
+                    role: "ai", 
+                    content: res.answer,
+                    sources: res.sources
+                }]);
+            }
+        } catch (error: any) {
             console.error(error);
+            const errorMessage = error.response?.data?.detail || "Sorry, I encountered an error connecting to the knowledge base. Please check the backend connection.";
             setMessages(prev => [...prev, { 
                 role: "ai", 
-                content: "Sorry, I encountered an error connecting to the knowledge base. Please check the backend connection." 
+                content: errorMessage 
             }]);
         } finally {
             setIsLoading(false);

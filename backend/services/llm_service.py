@@ -31,12 +31,17 @@ class LLMService:
         if not settings.GEMINI_API_KEY:
             raise ValueError("GEMINI_API_KEY is not set.")
             
-        result = genai.embed_content(
-            model=EMBEDDING_MODEL_NAME,
-            content=query,
-            task_type="retrieval_query"
-        )
-        return result['embedding']
+        try:
+            result = genai.embed_content(
+                model=EMBEDDING_MODEL_NAME,
+                content=query,
+                task_type="retrieval_query"
+            )
+            return result['embedding']
+        except Exception as e:
+            if "429" in str(e):
+                raise ValueError("API rate limit exceeded. Please try again in a minute.")
+            raise
 
     @staticmethod
     def generate_content(prompt: str) -> str:
@@ -45,5 +50,10 @@ class LLMService:
             raise ValueError("GEMINI_API_KEY is not set.")
             
         model = genai.GenerativeModel(LLM_MODEL_NAME)
-        response = model.generate_content(prompt)
-        return response.text
+        try:
+            response = model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            if "429" in str(e):
+                raise ValueError("API rate limit exceeded. Please try again in a minute.")
+            raise
