@@ -4,9 +4,11 @@ from core.config import settings
 from api.routes import router as api_router
 from db.document_store import DocumentStore
 from db.chat_store import ChatStore
+from db.ats_store import AtsStore
 
 DocumentStore.init_db()
 ChatStore.init_db()
+AtsStore.init_db()
 
 app = FastAPI(title=settings.PROJECT_NAME)
 

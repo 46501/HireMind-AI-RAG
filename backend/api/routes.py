@@ -65,6 +65,7 @@ async def upload_knowledge(file: UploadFile = File(...), category: str = Form("g
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An internal error occurred: {str(e)}")
 
 from db.chat_store import ChatStore
+from db.ats_store import AtsStore
 
 @router.post("/chat")
 async def chat_with_knowledge(request: ChatRequest):
@@ -130,12 +131,26 @@ async def analyze_resume(resume: UploadFile = File(...), jd: Optional[UploadFile
         if "error" in analysis:
             return analysis
             
+        AtsStore.save_analysis(resume.filename, analysis.get("overall_score", 0), analysis)
+            
         return analysis
     except ValueError as ve:
         logger.error(f"Validation error in analyze_resume: {ve}")
         return {"error": str(ve)}
     except Exception as e:
         logger.error(f"Error in analyze_resume: {e}")
+        return {"error": str(e)}
+
+@router.get("/analyze/latest")
+async def get_latest_analysis():
+    """Retrieve the most recent ATS analysis."""
+    try:
+        data = AtsStore.get_latest_analysis()
+        if data:
+            return {"analysis": data}
+        return {"message": "No analysis found."}
+    except Exception as e:
+        logger.error(f"Error fetching latest analysis: {e}")
         return {"error": str(e)}
 
 @router.post("/roadmap")

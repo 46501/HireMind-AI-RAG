@@ -42,6 +42,11 @@ export const analyzeResume = async (resumeFile: File, jdFile?: File) => {
     return response.data;
 };
 
+export const getLatestAnalysis = async () => {
+    const response = await api.get("/analyze/latest");
+    return response.data;
+};
+
 export const generateRoadmap = async (skills: string, targetRole: string) => {
     const response = await api.post("/roadmap", { skills, target_role: targetRole });
     return response.data;

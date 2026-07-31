@@ -1,36 +1,49 @@
 import { motion } from "framer-motion";
-import { Brain, FileText, Briefcase, BookOpen, Activity, Database, Server } from "lucide-react";
+import { Brain, FileText, Briefcase, BookOpen, Activity, Database, Server, Clock, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getSystemStatus } from "../services/api";
+import { getSystemStatus, getLatestAnalysis } from "../services/api";
 
 export const Dashboard = () => {
     const [status, setStatus] = useState<any>(null);
+    const [latestAnalysis, setLatestAnalysis] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchStatus = async () => {
+        const fetchData = async () => {
             try {
-                const res = await getSystemStatus();
-                setStatus(res);
+                const [statusRes, analysisRes] = await Promise.all([
+                    getSystemStatus(),
+                    getLatestAnalysis()
+                ]);
+                setStatus(statusRes);
+                if (analysisRes.analysis) {
+                    setLatestAnalysis(analysisRes.analysis);
+                }
             } catch (error) {
-                console.error("Failed to fetch status", error);
+                console.error("Failed to fetch dashboard data", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchStatus();
+        fetchData();
     }, []);
 
     const stats = [
         { label: "Knowledge Base", value: status?.knowledge_base_count ?? 0, icon: <BookOpen size={24} />, color: "text-blue-500", bg: "bg-blue-500/10" },
-        { label: "Resume ATS Score", value: "--", icon: <FileText size={24} />, color: "text-green-500", bg: "bg-green-500/10" },
+        { label: "Resume ATS Score", value: latestAnalysis?.overall_score ?? "--", icon: <FileText size={24} />, color: "text-green-500", bg: "bg-green-500/10" },
         { label: "Roadmap Progress", value: "--", icon: <Briefcase size={24} />, color: "text-purple-500", bg: "bg-purple-500/10" },
         { label: "Interviews Prep", value: "--", icon: <Brain size={24} />, color: "text-orange-500", bg: "bg-orange-500/10" },
     ];
 
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleString(undefined, {
+            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+    };
+
     return (
-        <div className="h-full flex flex-col gap-8">
+        <div className="h-full flex flex-col gap-8 overflow-y-auto pb-8 pr-2">
             <header>
                 <h1 className="text-3xl font-bold">Welcome back, User 👋</h1>
                 <p className="text-muted-foreground mt-2">Here is your career progress overview.</p>
@@ -58,6 +71,44 @@ export const Dashboard = () => {
                         </div>
                     </motion.div>
                 ))}
+            </div>
+
+            {/* Latest ATS Analysis Summary */}
+            <div className="glass rounded-2xl p-6 border border-border">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <FileText size={20} className="text-primary"/> Latest ATS Analysis
+                </h2>
+                
+                {loading ? (
+                    <div className="flex justify-center p-6"><div className="w-8 h-8 rounded-full border-4 border-primary/20 border-t-primary animate-spin"></div></div>
+                ) : latestAnalysis ? (
+                    <div className="flex flex-col md:flex-row items-center justify-between bg-black/5 dark:bg-white/5 p-5 rounded-xl border border-border gap-4">
+                        <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                            <div className={`w-20 h-20 rounded-full flex flex-col items-center justify-center border-[6px] ${latestAnalysis.overall_score >= 80 ? 'border-green-500 text-green-500' : latestAnalysis.overall_score >= 60 ? 'border-orange-500 text-orange-500' : 'border-red-500 text-red-500'}`}>
+                                <span className="text-2xl font-black">{latestAnalysis.overall_score}</span>
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-lg">{latestAnalysis.filename}</h3>
+                                <p className="text-sm text-muted-foreground mt-1 flex items-center justify-center md:justify-start gap-1">
+                                    <Clock size={14} /> Analyzed on {formatDate(latestAnalysis.created_at)}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <Link to="/resume" className="bg-primary text-white font-bold px-6 py-3 rounded-xl hover:bg-primary/90 transition-all flex items-center gap-2 whitespace-nowrap">
+                            View Full Report <ChevronRight size={18} />
+                        </Link>
+                    </div>
+                ) : (
+                    <div className="text-center p-8 bg-black/5 dark:bg-white/5 rounded-xl border border-dashed border-border flex flex-col items-center">
+                        <FileText size={48} className="text-muted-foreground mb-4 opacity-30" />
+                        <h3 className="font-bold text-lg mb-1">No resume analyzed yet.</h3>
+                        <p className="text-muted-foreground text-sm mb-4">Upload a resume to generate your ATS score and get actionable feedback.</p>
+                        <Link to="/resume" className="bg-primary text-white font-bold px-6 py-2 rounded-xl hover:bg-primary/90 transition-all">
+                            Analyze Resume Now
+                        </Link>
+                    </div>
+                )}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-[300px]">

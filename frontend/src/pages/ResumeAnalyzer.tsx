@@ -1,7 +1,7 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { FileText, UploadCloud, Loader2, CheckCircle, AlertTriangle, Target, Download, ChevronDown, ChevronUp, BarChart3, ListChecks, Zap } from "lucide-react";
-import { analyzeResume } from "../services/api";
+import { analyzeResume, getLatestAnalysis } from "../services/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer, Tooltip } from "recharts";
 import html2pdf from "html2pdf.js";
@@ -74,9 +74,25 @@ export const ResumeAnalyzer = () => {
     const [jdFile, setJdFile] = useState<File | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [results, setResults] = useState<any>(null);
+    const [latestFilename, setLatestFilename] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     
     const reportRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const loadLatest = async () => {
+            try {
+                const res = await getLatestAnalysis();
+                if (res.analysis) {
+                    setResults(res.analysis.analysis_data);
+                    setLatestFilename(res.analysis.filename);
+                }
+            } catch (err) {
+                console.error("Failed to load latest analysis", err);
+            }
+        };
+        loadLatest();
+    }, []);
 
     const onDropResume = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0) setResumeFile(acceptedFiles[0]);
@@ -137,7 +153,7 @@ export const ResumeAnalyzer = () => {
         
         const opt = {
             margin: 0.5,
-            filename: `ATS_Report_${resumeFile?.name || 'resume'}.pdf`,
+            filename: `ATS_Report_${resumeFile?.name || latestFilename || 'resume'}.pdf`,
             image: { type: 'jpeg' as const, quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const }
@@ -347,7 +363,7 @@ export const ResumeAnalyzer = () => {
 
                     <div className="flex justify-center mt-4">
                         <button 
-                            onClick={() => { setResults(null); setResumeFile(null); setJdFile(null); }}
+                            onClick={() => { setResults(null); setResumeFile(null); setJdFile(null); setLatestFilename(null); }}
                             className="text-muted-foreground hover:text-foreground font-medium underline"
                         >
                             Upload another resume
