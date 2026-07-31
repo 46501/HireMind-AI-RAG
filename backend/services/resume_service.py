@@ -8,25 +8,44 @@ class ResumeService:
         
         prompt = f"""
 You are an expert ATS (Applicant Tracking System) and Senior Technical Recruiter.
-Analyze the following resume.
-{f'Compare it against this Job Description:{job_description}' if job_description else ''}
+Analyze the following resume deeply.
+{f'Compare it against this Job Description:{job_description}' if job_description else 'Analyze it based on general industry best practices.'}
 
 Provide a detailed JSON response strictly following this structure (do not include markdown block markers):
 {{
-    "overall_score": 0-100,
-    "section_scores": {{
-        "formatting": 0-100,
-        "skills": 0-100,
-        "projects": 0-100,
-        "experience": 0-100,
-        "education": 0-100
+    "overall_score": 0,
+    "hiring_readiness": 0,
+    "category_scores": {{
+        "formatting": 0,
+        "keyword_match": 0,
+        "skills": 0,
+        "experience": 0,
+        "education": 0,
+        "readability": 0,
+        "project_quality": 0,
+        "ats_compatibility": 0
     }},
-    "weak_sections": ["list of weak areas"],
-    "missing_keywords": ["list of missing keywords or skills"],
-    "suggestions": ["list of actionable suggestions to improve"],
-    "improved_summary": "A professionally rewritten professional summary",
-    "ats_match_percentage": (if JD provided, else 0)
+    "section_analysis": {{
+        "contact_information": {{"present": true, "feedback": "string", "issues": ["list of strings"]}},
+        "professional_summary": {{"present": true, "feedback": "string", "issues": ["list of strings"], "rewrite_suggestion": "string"}},
+        "skills": {{"present": true, "detected": ["string"], "missing": ["string"], "feedback": "string", "issues": ["list of strings"], "rewrite_suggestion": "string"}},
+        "experience": {{"present": true, "feedback": "string", "issues": ["list of strings"], "rewrite_suggestion": "string"}},
+        "projects": {{"present": true, "feedback": "string", "issues": ["list of strings"], "rewrite_suggestion": "string"}},
+        "education": {{"present": true, "feedback": "string", "issues": ["list of strings"]}}
+    }},
+    "critical_issues": ["list of major errors"],
+    "strengths": ["list of strengths"],
+    "weaknesses": ["list of weaknesses"],
+    "top_improvements": ["top 3-5 things to fix immediately"],
+    "keywords": {{
+        "detected": ["list"],
+        "missing": ["list"],
+        "suggested": ["list"]
+    }}
 }}
+
+Ensure all scores are out of 100. Be extremely strict and critical, like a real ATS.
+Check for weak action verbs, lack of metrics, grammar issues, missing skills, and poor formatting.
 
 Resume:
 {resume_text}
@@ -43,7 +62,7 @@ Resume:
                 
             return json.loads(cleaned_response)
         except json.JSONDecodeError:
-            return {"error": "Failed to parse LLM response into JSON."}
+            return {"error": "Failed to parse LLM response into JSON. The resume might be too complex or the model timed out."}
 
     @staticmethod
     def generate_roadmap(skills: str, target_role: str) -> dict:
