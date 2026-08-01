@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from services.rag_service import RAGService
 from services.resume_service import ResumeService
 from utils.document_parser import DocumentParser
+from db.job_store import JobStore
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,16 @@ class InterviewRequest(BaseModel):
     company: str
     role: str
     difficulty: str
+
+class JobCreate(BaseModel):
+    company: str
+    role: str
+    status: str
+    salary: Optional[str] = ""
+    notes: Optional[str] = ""
+
+class JobUpdate(BaseModel):
+    status: str
 
 @router.post("/upload/knowledge")
 async def upload_knowledge(file: UploadFile = File(...), category: str = Form("general")):
@@ -217,3 +228,49 @@ async def generate_interview(request: InterviewRequest):
     except Exception as e:
         logger.error(f"Error in generate_interview: {e}")
         return {"error": "An unexpected error occurred while generating interview questions."}
+
+@router.post("/generate/cover-letter")
+async def generate_cover_letter(
+    resume: UploadFile = File(...),
+    jd: Optional[UploadFile] = File(None),
+    tone: str = Form("Professional")
+):
+    try:
+        resume_text = await DocumentParser.extract_text(resume)
+        if not resume_text:
+            return {"error": "Could not extract text from the resume."}
+            
+        jd_text = None
+        if jd:
+            jd_text = await DocumentParser.extract_text(jd)
+            
+        result = ResumeService.generate_cover_letter(resume_text, jd_text, tone)
+        return result
+    except Exception as e:
+        logger.error(f"Error generating cover letter: {e}")
+        return {"error": str(e)}
+
+@router.post("/jobs")
+async def add_job(job: JobCreate):
+    result = JobStore.add_job(job.company, job.role, job.status, job.salary, job.notes)
+    if result:
+        return result
+    raise HTTPException(status_code=500, detail="Failed to add job")
+
+@router.get("/jobs")
+async def get_jobs():
+    return JobStore.get_all_jobs()
+
+@router.put("/jobs/{job_id}/status")
+async def update_job_status(job_id: int, job_update: JobUpdate):
+    success = JobStore.update_job_status(job_id, job_update.status)
+    if success:
+        return {"message": "Status updated successfully"}
+    raise HTTPException(status_code=404, detail="Job not found or update failed")
+
+@router.delete("/jobs/{job_id}")
+async def delete_job(job_id: int):
+    success = JobStore.delete_job(job_id)
+    if success:
+        return {"message": "Job deleted successfully"}
+    raise HTTPException(status_code=404, detail="Job not found or delete failed")

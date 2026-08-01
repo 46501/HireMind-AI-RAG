@@ -6,6 +6,8 @@ import { Chat } from "./pages/Chat";
 import { ResumeAnalyzer } from "./pages/ResumeAnalyzer";
 import { Roadmap } from "./pages/Roadmap";
 import { InterviewPrep } from "./pages/InterviewPrep";
+import { CoverLetter } from "./pages/CoverLetter";
+import { JobTracker } from "./pages/JobTracker";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           <Route path="knowledge" element={<KnowledgeBase />} />
           <Route path="chat" element={<Chat />} />
           <Route path="resume" element={<ResumeAnalyzer />} />
+          <Route path="cover-letter" element={<CoverLetter />} />
+          <Route path="job-tracker" element={<JobTracker />} />
           <Route path="roadmap" element={<Roadmap />} />
           <Route path="interview" element={<InterviewPrep />} />
           <Route path="*" element={<div className="flex h-full items-center justify-center font-bold text-2xl text-muted-foreground">Coming Soon</div>} />

@@ -3,6 +3,38 @@ from services.llm_service import LLMService
 
 class ResumeService:
     @staticmethod
+    def generate_cover_letter(resume_text: str, job_description: str = None, tone: str = "Professional") -> dict:
+        """Generate a tailored cover letter."""
+        prompt = f"""
+You are an expert career coach and professional copywriter.
+Write a highly compelling, tailored cover letter based on the candidate's resume.
+{f'Tailor the letter specifically to this Job Description: {job_description}' if job_description else 'Write a general, high-impact cover letter for their industry.'}
+
+The tone of the cover letter should be: {tone}.
+
+Provide a JSON response strictly following this structure (do not include markdown block markers):
+{{
+    "cover_letter": "The full text of the generated cover letter",
+    "tips": ["list of 3 tips on how to use this letter effectively"]
+}}
+
+Resume:
+{resume_text}
+"""
+        response = LLMService.generate_content(prompt)
+        
+        try:
+            cleaned_response = response.strip()
+            if cleaned_response.startswith('```json'):
+                cleaned_response = cleaned_response[7:-3]
+            elif cleaned_response.startswith('```'):
+                cleaned_response = cleaned_response[3:-3]
+                
+            return json.loads(cleaned_response)
+        except json.JSONDecodeError:
+            return {"error": "Failed to generate cover letter. Please try again."}
+
+    @staticmethod
     def analyze_resume(resume_text: str, job_description: str = None) -> dict:
         """Analyze a resume and optionally compare against a job description."""
         

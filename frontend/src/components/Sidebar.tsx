@@ -9,6 +9,8 @@ export const Sidebar = () => {
         { name: "Knowledge Base", path: "/knowledge", icon: <BookOpen size={20} /> },
         { name: "AI Chat", path: "/chat", icon: <BotMessageSquare size={20} /> },
         { name: "Resume Analyzer", path: "/resume", icon: <FileText size={20} /> },
+        { name: "Cover Letter", path: "/cover-letter", icon: <FileText size={20} /> },
+        { name: "Job Tracker", path: "/job-tracker", icon: <Briefcase size={20} /> },
         { name: "Career Roadmap", path: "/roadmap", icon: <Briefcase size={20} /> },
         { name: "Interview Prep", path: "/interview", icon: <Brain size={20} /> },
     ];

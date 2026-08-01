@@ -71,3 +71,37 @@ export const generateInterview = async (company: string, role: string, difficult
     const response = await api.post("/interview", { company, role, difficulty });
     return response.data;
 };
+
+// Cover Letter
+export const generateCoverLetter = async (resumeFile: File, jdFile?: File, tone: string = "Professional") => {
+    const formData = new FormData();
+    formData.append("resume", resumeFile);
+    if (jdFile) formData.append("jd", jdFile);
+    formData.append("tone", tone);
+    
+    const response = await api.post("/generate/cover-letter", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+};
+
+// Job Tracker
+export const getJobs = async () => {
+    const response = await api.get("/jobs");
+    return response.data;
+};
+
+export const addJob = async (job: { company: string, role: string, status: string, salary?: string, notes?: string }) => {
+    const response = await api.post("/jobs", job);
+    return response.data;
+};
+
+export const updateJobStatus = async (jobId: number, status: string) => {
+    const response = await api.put(`/jobs/${jobId}/status`, { status });
+    return response.data;
+};
+
+export const deleteJob = async (jobId: number) => {
+    const response = await api.delete(`/jobs/${jobId}`);
+    return response.data;
+};
