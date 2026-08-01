@@ -19,7 +19,7 @@ export const Sidebar = () => {
                 <div className="bg-primary text-white p-1.5 rounded-lg">
                     <Briefcase size={24} />
                 </div>
-                <h1 className="text-xl font-bold tracking-tight">CareerPilot AI</h1>
+                <h1 className="text-xl font-bold tracking-tight">HireMind AI</h1>
             </div>
 
             <nav className="flex-1 flex flex-col gap-2">

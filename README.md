@@ -1,6 +1,6 @@
-# CareerPilot AI – AI Career Copilot
+# HireMind AI – AI Career Assistant
 
-CareerPilot AI is a production-ready AI Career Copilot platform built using React (Vite), FastAPI, ChromaDB, and Google Gemini. The platform uses a Retrieval-Augmented Generation (RAG) engine to provide intelligent career advice, parse resumes, identify skill gaps, and generate roadmaps.
+HireMind AI is a production-ready AI-Powered Career Assistant platform built using React (Vite), FastAPI, ChromaDB, and Google Gemini. The platform uses a Retrieval-Augmented Generation (RAG) engine to provide intelligent career advice, parse resumes, identify skill gaps, and generate roadmaps.
 
 ## 🚀 Features
 - **Knowledge Base (RAG):** Upload PDFs, DOCX, and TXT files (e.g., Interview Experiences, Notes). The system chunks, embeds, and stores them in a local ChromaDB for semantic search and AI Q&A.
