@@ -4,6 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        try {
+          var theme = localStorage.getItem('hiremind-theme');
+          var d = document.documentElement;
+          if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            d.classList.add('dark');
+          } else {
+            d.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta name="description" content="HireMind AI – AI-Powered Career Assistant built with RAG, Gemini, and ChromaDB." />
     <title>HireMind AI</title>
   </head>
