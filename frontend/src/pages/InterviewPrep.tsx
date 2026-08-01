@@ -68,7 +68,7 @@ export const InterviewPrep = () => {
                                 placeholder="e.g. Google, Microsoft, Startup Inc..."
                                 value={company}
                                 onChange={(e) => setCompany(e.target.value)}
-                                className="bg-white dark:bg-black/40 border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                                 required
                             />
                         </div>
@@ -82,7 +82,7 @@ export const InterviewPrep = () => {
                                 placeholder="e.g. Frontend Engineer, Product Manager..."
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
-                                className="bg-white dark:bg-black/40 border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                                 required
                             />
                         </div>
@@ -93,7 +93,7 @@ export const InterviewPrep = () => {
                             </label>
                             <div className="flex gap-4">
                                 {["Entry Level", "Intermediate", "Senior"].map(level => (
-                                    <label key={level} className={`flex-1 flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-colors ${difficulty === level ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-black/40 border-border hover:border-primary/50'}`}>
+                                    <label key={level} className={`flex-1 flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-colors ${difficulty === level ? 'bg-primary text-primary-foreground border-primary' : 'bg-background border-border hover:border-primary/50'}`}>
                                         <input 
                                             type="radio" 
                                             name="difficulty" 
@@ -117,7 +117,7 @@ export const InterviewPrep = () => {
                         <button
                             type="submit"
                             disabled={isLoading || !company || !role}
-                            className="bg-primary text-white font-bold text-lg px-8 py-4 rounded-2xl hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-4 shadow-lg"
+                            className="bg-primary text-primary-foreground font-bold text-lg px-8 py-4 rounded-2xl hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-4 shadow-lg"
                         >
                             {isLoading ? (
                                 <>
@@ -134,14 +134,14 @@ export const InterviewPrep = () => {
                 </div>
             ) : (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-6">
-                    <div className="flex justify-between items-center bg-black/5 dark:bg-white/5 p-6 rounded-2xl border border-border">
+                    <div className="flex justify-between items-center bg-muted/50 p-6 rounded-2xl border border-border">
                         <div>
                             <h2 className="text-2xl font-bold">{company} - {role}</h2>
                             <p className="text-muted-foreground mt-1">Difficulty: {difficulty}</p>
                         </div>
                         <button 
                             onClick={() => {setQuestions(null); setExpandedQ(null);}}
-                            className="px-4 py-2 bg-white dark:bg-black border border-border rounded-xl text-sm font-medium hover:border-primary transition-colors"
+                            className="px-4 py-2 bg-background border border-border rounded-xl text-sm font-medium hover:border-primary transition-colors"
                         >
                             New Setup
                         </button>
@@ -171,7 +171,7 @@ export const InterviewPrep = () => {
                                 className="glass rounded-2xl border border-border overflow-hidden shadow-sm"
                             >
                                 <div 
-                                    className="p-6 cursor-pointer flex justify-between items-center hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                                    className="p-6 cursor-pointer flex justify-between items-center hover:bg-accent hover:text-accent-foreground transition-colors"
                                     onClick={() => setExpandedQ(expandedQ === i ? null : i)}
                                 >
                                     <h3 className="font-bold text-lg pr-4">{i + 1}. {q.question}</h3>
@@ -185,7 +185,7 @@ export const InterviewPrep = () => {
                                             <p className="text-foreground/80 leading-relaxed text-sm">{q.ideal_answer}</p>
                                         </div>
                                         {q.hint && (
-                                            <div className="p-4 bg-white dark:bg-black/40 rounded-xl border border-border/50">
+                                            <div className="p-4 bg-background rounded-xl border border-border/50">
                                                 <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Coach's Hint</h4>
                                                 <p className="text-sm text-foreground/70">{q.hint}</p>
                                             </div>

@@ -63,7 +63,7 @@ export const Dashboard = () => {
                         </div>
                         <div>
                             {loading ? (
-                                <div className="h-9 w-16 bg-black/10 dark:bg-white/10 rounded animate-pulse mb-1"></div>
+                                <div className="h-9 w-16 bg-muted rounded animate-pulse mb-1"></div>
                             ) : (
                                 <div className="text-3xl font-bold">{s.value}</div>
                             )}
@@ -82,7 +82,7 @@ export const Dashboard = () => {
                 {loading ? (
                     <div className="flex justify-center p-6"><div className="w-8 h-8 rounded-full border-4 border-primary/20 border-t-primary animate-spin"></div></div>
                 ) : latestAnalysis ? (
-                    <div className="flex flex-col md:flex-row items-center justify-between bg-black/5 dark:bg-white/5 p-5 rounded-xl border border-border gap-4">
+                    <div className="flex flex-col md:flex-row items-center justify-between bg-muted/50 p-5 rounded-xl border border-border gap-4">
                         <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
                             <div className={`w-20 h-20 rounded-full flex flex-col items-center justify-center border-[6px] ${latestAnalysis.overall_score >= 80 ? 'border-green-500 text-green-500' : latestAnalysis.overall_score >= 60 ? 'border-orange-500 text-orange-500' : 'border-red-500 text-red-500'}`}>
                                 <span className="text-2xl font-black">{latestAnalysis.overall_score}</span>
@@ -95,16 +95,16 @@ export const Dashboard = () => {
                             </div>
                         </div>
                         
-                        <Link to="/resume" className="bg-primary text-white font-bold px-6 py-3 rounded-xl hover:bg-primary/90 transition-all flex items-center gap-2 whitespace-nowrap">
+                        <Link to="/resume" className="bg-primary text-primary-foreground font-bold px-6 py-3 rounded-xl hover:bg-primary/90 transition-all flex items-center gap-2 whitespace-nowrap">
                             View Full Report <ChevronRight size={18} />
                         </Link>
                     </div>
                 ) : (
-                    <div className="text-center p-8 bg-black/5 dark:bg-white/5 rounded-xl border border-dashed border-border flex flex-col items-center">
+                    <div className="text-center p-8 bg-muted/50 rounded-xl border border-dashed border-border flex flex-col items-center">
                         <FileText size={48} className="text-muted-foreground mb-4 opacity-30" />
                         <h3 className="font-bold text-lg mb-1">No resume analyzed yet.</h3>
                         <p className="text-muted-foreground text-sm mb-4">Upload a resume to generate your ATS score and get actionable feedback.</p>
-                        <Link to="/resume" className="bg-primary text-white font-bold px-6 py-2 rounded-xl hover:bg-primary/90 transition-all">
+                        <Link to="/resume" className="bg-primary text-primary-foreground font-bold px-6 py-2 rounded-xl hover:bg-primary/90 transition-all">
                             Analyze Resume Now
                         </Link>
                     </div>
@@ -115,19 +115,19 @@ export const Dashboard = () => {
                 <div className="glass rounded-2xl p-6 flex flex-col col-span-2">
                     <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Link to="/resume" className="p-4 rounded-xl border border-border bg-white dark:bg-black/20 hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
+                        <Link to="/resume" className="p-4 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
                             <FileText size={32} className="text-primary" />
                             <span className="font-medium">Analyze Resume</span>
                         </Link>
-                        <Link to="/chat" className="p-4 rounded-xl border border-border bg-white dark:bg-black/20 hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
+                        <Link to="/chat" className="p-4 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
                             <Brain size={32} className="text-primary" />
                             <span className="font-medium">Ask AI Coach</span>
                         </Link>
-                        <Link to="/roadmap" className="p-4 rounded-xl border border-border bg-white dark:bg-black/20 hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
+                        <Link to="/roadmap" className="p-4 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
                             <Briefcase size={32} className="text-primary" />
                             <span className="font-medium">Build Roadmap</span>
                         </Link>
-                        <Link to="/knowledge" className="p-4 rounded-xl border border-border bg-white dark:bg-black/20 hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
+                        <Link to="/knowledge" className="p-4 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
                             <BookOpen size={32} className="text-primary" />
                             <span className="font-medium">Add Knowledge</span>
                         </Link>
@@ -137,34 +137,34 @@ export const Dashboard = () => {
                 <div className="glass rounded-2xl p-6">
                     <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Activity size={20} className="text-primary"/> System Status</h2>
                     <div className="flex flex-col gap-3">
-                        <div className="p-3 rounded-lg bg-white dark:bg-black/20 border border-border flex justify-between items-center">
+                        <div className="p-3 rounded-lg bg-card border border-border flex justify-between items-center">
                             <div className="flex items-center gap-2">
                                 <Server size={18} className="text-muted-foreground" />
                                 <span>API Backend</span>
                             </div>
-                            {loading ? <div className="h-6 w-16 bg-black/10 dark:bg-white/10 rounded animate-pulse"></div> : (
+                            {loading ? <div className="h-6 w-16 bg-muted rounded animate-pulse"></div> : (
                                 <span className={`text-xs px-2 py-1 rounded-full font-medium ${status?.status === 'Online' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                                     {status?.status || "Offline"}
                                 </span>
                             )}
                         </div>
-                        <div className="p-3 rounded-lg bg-white dark:bg-black/20 border border-border flex justify-between items-center">
+                        <div className="p-3 rounded-lg bg-card border border-border flex justify-between items-center">
                             <div className="flex items-center gap-2">
                                 <Brain size={18} className="text-muted-foreground" />
                                 <span>Gemini AI</span>
                             </div>
-                            {loading ? <div className="h-6 w-16 bg-black/10 dark:bg-white/10 rounded animate-pulse"></div> : (
+                            {loading ? <div className="h-6 w-16 bg-muted rounded animate-pulse"></div> : (
                                 <span className={`text-xs px-2 py-1 rounded-full font-medium ${status?.gemini_api === 'Connected' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                                     {status?.gemini_api || "Disconnected"}
                                 </span>
                             )}
                         </div>
-                        <div className="p-3 rounded-lg bg-white dark:bg-black/20 border border-border flex justify-between items-center">
+                        <div className="p-3 rounded-lg bg-card border border-border flex justify-between items-center">
                             <div className="flex items-center gap-2">
                                 <Database size={18} className="text-muted-foreground" />
                                 <span>ChromaDB Vector</span>
                             </div>
-                            {loading ? <div className="h-6 w-16 bg-black/10 dark:bg-white/10 rounded animate-pulse"></div> : (
+                            {loading ? <div className="h-6 w-16 bg-muted rounded animate-pulse"></div> : (
                                 <span className={`text-xs px-2 py-1 rounded-full font-medium ${status?.chroma_db === 'Connected' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                                     {status?.chroma_db || "Disconnected"}
                                 </span>

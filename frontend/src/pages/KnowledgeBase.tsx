@@ -90,7 +90,7 @@ export const KnowledgeBase = () => {
                     <div 
                         {...getRootProps()} 
                         className={`min-h-[300px] border-2 border-dashed rounded-3xl flex flex-col items-center justify-center p-8 transition-colors cursor-pointer ${
-                            isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-black/5 dark:hover:bg-white/5"
+                            isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-accent"
                         }`}
                     >
                         <input {...getInputProps()} />
@@ -127,7 +127,7 @@ export const KnowledgeBase = () => {
                         <span className="flex items-center gap-2">
                             <Database size={20} className="text-primary"/> Indexed Documents
                         </span>
-                        <span className="text-sm font-normal text-muted-foreground bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full">
+                        <span className="text-sm font-normal text-muted-foreground bg-muted px-3 py-1 rounded-full">
                             {documents.length} Docs
                         </span>
                     </h2>
@@ -146,7 +146,7 @@ export const KnowledgeBase = () => {
                         ) : (
                             <div className="flex flex-col gap-2">
                                 {documents.map((doc, i) => (
-                                    <div key={i} className="p-4 rounded-2xl bg-white dark:bg-black/40 border border-border flex items-center justify-between group hover:border-primary/50 transition-colors">
+                                    <div key={i} className="p-4 rounded-2xl bg-background border border-border flex items-center justify-between group hover:border-primary/50 transition-colors">
                                         <div className="flex items-center gap-4 overflow-hidden">
                                             <div className="bg-primary/10 text-primary p-3 rounded-xl shrink-0">
                                                 <File size={20} />

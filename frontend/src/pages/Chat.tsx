@@ -126,11 +126,11 @@ export const Chat = () => {
                     ) : (
                         messages.map((msg, i) => (
                             <div key={i} className={`flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'self-end flex-row-reverse' : 'self-start'}`}>
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-primary/20 text-primary'}`}>
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-primary/20 text-primary'}`}>
                                     {msg.role === 'user' ? <User size={20} /> : <Bot size={20} />}
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <div className={`p-4 rounded-2xl ${msg.role === 'user' ? 'bg-primary text-white rounded-tr-sm' : 'bg-white dark:bg-black/40 border border-border text-foreground rounded-tl-sm'}`}>
+                                    <div className={`p-4 rounded-2xl ${msg.role === 'user' ? 'bg-primary text-primary-foreground rounded-tr-sm' : 'bg-background border border-border text-foreground rounded-tl-sm'}`}>
                                         <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                                     </div>
                                     
@@ -151,7 +151,7 @@ export const Chat = () => {
                             <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-primary/20 text-primary">
                                 <Bot size={20} />
                             </div>
-                            <div className="p-4 rounded-2xl bg-white dark:bg-black/40 border border-border text-foreground rounded-tl-sm flex items-center gap-2">
+                            <div className="p-4 rounded-2xl bg-background border border-border text-foreground rounded-tl-sm flex items-center gap-2">
                                 <Loader2 size={18} className="animate-spin text-primary" />
                                 <span className="text-sm font-medium animate-pulse">Thinking...</span>
                             </div>
@@ -162,20 +162,20 @@ export const Chat = () => {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 bg-black/5 dark:bg-white/5 border-t border-border">
+                <div className="p-4 bg-muted/50 border-t border-border">
                     <form onSubmit={handleSubmit} className="flex gap-4">
                         <input
                             type="text"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask a question about your documents..."
-                            className="flex-1 bg-white dark:bg-black/40 border border-border rounded-xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            className="flex-1 bg-background border border-border rounded-xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                             disabled={isLoading || isFetchingHistory}
                         />
                         <button
                             type="submit"
                             disabled={isLoading || isFetchingHistory || !input.trim()}
-                            className="bg-primary text-white p-4 rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                            className="bg-primary text-primary-foreground p-4 rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                         >
                             <Send size={24} />
                         </button>

@@ -53,7 +53,7 @@ export const Roadmap = () => {
                                 placeholder="e.g. Full Stack Developer, Data Scientist..."
                                 value={targetRole}
                                 onChange={(e) => setTargetRole(e.target.value)}
-                                className="bg-white dark:bg-black/40 border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                                 required
                             />
                         </div>
@@ -67,7 +67,7 @@ export const Roadmap = () => {
                                 value={skills}
                                 onChange={(e) => setSkills(e.target.value)}
                                 rows={4}
-                                className="bg-white dark:bg-black/40 border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                                className="bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
                                 required
                             />
                         </div>
@@ -81,7 +81,7 @@ export const Roadmap = () => {
                         <button
                             type="submit"
                             disabled={isLoading || !skills || !targetRole}
-                            className="bg-primary text-white font-bold text-lg px-8 py-4 rounded-2xl hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-4 shadow-lg"
+                            className="bg-primary text-primary-foreground font-bold text-lg px-8 py-4 rounded-2xl hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-4 shadow-lg"
                         >
                             {isLoading ? (
                                 <>
@@ -98,14 +98,14 @@ export const Roadmap = () => {
                 </div>
             ) : (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-                    <div className="flex justify-between items-center bg-black/5 dark:bg-white/5 p-6 rounded-2xl border border-border">
+                    <div className="flex justify-between items-center bg-muted/50 p-6 rounded-2xl border border-border">
                         <div>
                             <h2 className="text-2xl font-bold">Your Path to {targetRole}</h2>
                             <p className="text-muted-foreground mt-1">Based on your existing skills: {skills}</p>
                         </div>
                         <button 
                             onClick={() => setRoadmap(null)}
-                            className="px-4 py-2 bg-white dark:bg-black border border-border rounded-xl text-sm font-medium hover:border-primary transition-colors"
+                            className="px-4 py-2 bg-background border border-border rounded-xl text-sm font-medium hover:border-primary transition-colors"
                         >
                             Start Over
                         </button>

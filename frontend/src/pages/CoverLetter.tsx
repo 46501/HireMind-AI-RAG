@@ -110,7 +110,7 @@ export const CoverLetter = () => {
                                 <div 
                                     {...getResumeProps()} 
                                     className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all ${
-                                        resumeFile ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-black/5 dark:hover:bg-white/5"
+                                        resumeFile ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-accent"
                                     }`}
                                 >
                                     <input {...getResumeInput()} />
@@ -133,7 +133,7 @@ export const CoverLetter = () => {
                                 <div 
                                     {...getJDProps()} 
                                     className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all ${
-                                        jdFile ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-black/5 dark:hover:bg-white/5"
+                                        jdFile ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-accent"
                                     }`}
                                 >
                                     <input {...getJDInput()} />
@@ -211,7 +211,7 @@ export const CoverLetter = () => {
                                 <div className="flex items-center gap-2">
                                     <button 
                                         onClick={copyToClipboard}
-                                        className="p-2 bg-background hover:bg-black/5 dark:hover:bg-white/5 border rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
+                                        className="p-2 bg-background hover:bg-accent hover:text-accent-foreground border rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
                                         title="Copy to Clipboard"
                                     >
                                         <Copy size={16} />
@@ -228,7 +228,7 @@ export const CoverLetter = () => {
                                 </div>
                             </div>
                             
-                            <div className="p-8 flex-1 overflow-y-auto bg-white dark:bg-[#121212] font-serif">
+                            <div className="p-8 flex-1 overflow-y-auto bg-background font-serif">
                                 <div className="max-w-[6.5in] mx-auto whitespace-pre-wrap text-foreground/90 leading-relaxed">
                                     {results.cover_letter}
                                 </div>
