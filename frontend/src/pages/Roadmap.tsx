@@ -53,7 +53,7 @@ export const Roadmap = () => {
                                 placeholder="e.g. Full Stack Developer, Data Scientist..."
                                 value={targetRole}
                                 onChange={(e) => setTargetRole(e.target.value)}
-                                className="bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="bg-background border border-border rounded-xl px-4 py-3 input-interactive"
                                 required
                             />
                         </div>
@@ -67,7 +67,7 @@ export const Roadmap = () => {
                                 value={skills}
                                 onChange={(e) => setSkills(e.target.value)}
                                 rows={4}
-                                className="bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                                className="bg-background border border-border rounded-xl px-4 py-3 resize-none input-interactive"
                                 required
                             />
                         </div>
@@ -81,7 +81,7 @@ export const Roadmap = () => {
                         <button
                             type="submit"
                             disabled={isLoading || !skills || !targetRole}
-                            className="bg-primary text-primary-foreground font-bold text-lg px-8 py-4 rounded-2xl hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-4 shadow-lg"
+                            className="bg-primary text-primary-foreground font-bold text-lg px-8 py-4 rounded-2xl btn-primary flex items-center justify-center gap-3 mt-4 shadow-lg"
                         >
                             {isLoading ? (
                                 <>
@@ -105,7 +105,7 @@ export const Roadmap = () => {
                         </div>
                         <button 
                             onClick={() => setRoadmap(null)}
-                            className="px-4 py-2 bg-background border border-border rounded-xl text-sm font-medium hover:border-primary transition-colors"
+                            className="px-4 py-2 bg-background border border-border rounded-xl text-sm font-medium btn-ghost"
                         >
                             Start Over
                         </button>
@@ -133,7 +133,7 @@ export const Roadmap = () => {
                                         className="relative pl-12 py-2"
                                     >
                                         <div className="absolute left-[11px] top-3.5 w-4 h-4 rounded-full bg-background border-2 border-blue-500 z-10" />
-                                        <div className="glass p-4 rounded-2xl border border-border shadow-sm text-sm">
+                                                                                <div className="glass p-4 rounded-2xl border border-border shadow-sm text-sm card-subtle">
                                             {item}
                                         </div>
                                     </motion.div>
@@ -162,7 +162,7 @@ export const Roadmap = () => {
                                         className="relative pl-12 py-2"
                                     >
                                         <div className="absolute left-[11px] top-3.5 w-4 h-4 rounded-full bg-background border-2 border-purple-500 z-10" />
-                                        <div className="glass p-4 rounded-2xl border border-border shadow-sm text-sm">
+                                                                                <div className="glass p-4 rounded-2xl border border-border shadow-sm text-sm card-subtle">
                                             {item}
                                         </div>
                                     </motion.div>
@@ -191,7 +191,7 @@ export const Roadmap = () => {
                                         className="relative pl-12 py-2"
                                     >
                                         <div className="absolute left-[11px] top-3.5 w-4 h-4 rounded-full bg-background border-2 border-green-500 z-10" />
-                                        <div className="glass p-4 rounded-2xl border border-border shadow-sm text-sm">
+                                                                                <div className="glass p-4 rounded-2xl border border-border shadow-sm text-sm card-subtle">
                                             {item}
                                         </div>
                                     </motion.div>

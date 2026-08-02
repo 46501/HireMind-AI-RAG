@@ -109,7 +109,7 @@ export const JobTracker = () => {
                 </div>
                 <button 
                     onClick={() => setIsAddModalOpen(true)}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2"
+                    className="bg-primary text-primary-foreground px-4 py-2.5 rounded-xl font-bold btn-primary flex items-center gap-2"
                 >
                     <Plus size={20} />
                     Add Job
@@ -150,14 +150,14 @@ export const JobTracker = () => {
                                                                 ref={provided.innerRef}
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
-                                                                className={`bg-card p-4 rounded-xl shadow-sm border ${snapshot.isDragging ? 'shadow-lg border-primary ring-2 ring-primary/20 rotate-2 scale-105' : 'hover:border-primary/50'}`}
+                                                                className={`bg-card p-4 rounded-xl shadow-sm border transition-all duration-200 ${snapshot.isDragging ? 'shadow-lg border-primary ring-2 ring-primary/20 rotate-2 scale-105' : 'hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5'}`}
                                                                 style={{...provided.draggableProps.style}}
                                                             >
                                                                 <div className="flex justify-between items-start mb-2">
                                                                     <div className="font-bold text-sm truncate pr-2">{job.role}</div>
                                                                     <button 
                                                                         onClick={() => handleDelete(job.id)}
-                                                                        className="text-muted-foreground hover:text-red-500 transition-colors"
+                                                                        className="text-muted-foreground btn-icon"
                                                                     >
                                                                         <MoreHorizontal size={16} />
                                                                     </button>
@@ -200,31 +200,31 @@ export const JobTracker = () => {
                         <form onSubmit={handleAddJob} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium mb-1">Company *</label>
-                                <input required type="text" value={newJob.company} onChange={e => setNewJob({...newJob, company: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 outline-none" placeholder="e.g. Google" />
+                                                                <input required type="text" value={newJob.company} onChange={e => setNewJob({...newJob, company: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 input-interactive" placeholder="e.g. Google" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1">Role *</label>
-                                <input required type="text" value={newJob.role} onChange={e => setNewJob({...newJob, role: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 outline-none" placeholder="e.g. Frontend Engineer" />
+                                <input required type="text" value={newJob.role} onChange={e => setNewJob({...newJob, role: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 input-interactive" placeholder="e.g. Frontend Engineer" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium mb-1">Status</label>
-                                    <select value={newJob.status} onChange={e => setNewJob({...newJob, status: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 outline-none">
+                                    <select value={newJob.status} onChange={e => setNewJob({...newJob, status: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 input-interactive">
                                         {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                                     </select>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium mb-1">Salary</label>
-                                    <input type="text" value={newJob.salary} onChange={e => setNewJob({...newJob, salary: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 outline-none" placeholder="e.g. $120k" />
+                                    <input type="text" value={newJob.salary} onChange={e => setNewJob({...newJob, salary: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 input-interactive" placeholder="e.g. $120k" />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1">Notes</label>
-                                <textarea value={newJob.notes} onChange={e => setNewJob({...newJob, notes: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 outline-none h-24 resize-none" placeholder="Any links or details..." />
+                                <textarea value={newJob.notes} onChange={e => setNewJob({...newJob, notes: e.target.value})} className="w-full bg-background border rounded-lg px-4 py-2 h-24 resize-none input-interactive" placeholder="Any links or details..." />
                             </div>
                             <div className="flex justify-end gap-3 pt-4 border-t">
-                                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 rounded-lg font-medium hover:bg-muted transition-colors">Cancel</button>
-                                <button type="submit" className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors">Save Job</button>
+                                <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-4 py-2 rounded-lg font-medium btn-ghost">Cancel</button>
+                                <button type="submit" className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-bold btn-primary">Save Job</button>
                             </div>
                         </form>
                     </div>

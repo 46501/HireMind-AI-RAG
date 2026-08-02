@@ -56,7 +56,7 @@ export const Dashboard = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
                         key={i} 
-                        className="glass p-6 rounded-2xl shadow-sm border border-border flex flex-col gap-4 hover:shadow-md transition-all"
+                        className="glass p-6 rounded-2xl shadow-sm border border-border flex flex-col gap-4 card-interactive"
                     >
                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${s.bg} ${s.color}`}>
                             {s.icon}
@@ -95,7 +95,7 @@ export const Dashboard = () => {
                             </div>
                         </div>
                         
-                        <Link to="/resume" className="bg-primary text-primary-foreground font-bold px-6 py-3 rounded-xl hover:bg-primary/90 transition-all flex items-center gap-2 whitespace-nowrap">
+                        <Link to="/resume" className="bg-primary text-primary-foreground font-bold px-6 py-3 rounded-xl btn-primary flex items-center gap-2 whitespace-nowrap">
                             View Full Report <ChevronRight size={18} />
                         </Link>
                     </div>
@@ -104,7 +104,7 @@ export const Dashboard = () => {
                         <FileText size={48} className="text-muted-foreground mb-4 opacity-30" />
                         <h3 className="font-bold text-lg mb-1">No resume analyzed yet.</h3>
                         <p className="text-muted-foreground text-sm mb-4">Upload a resume to generate your ATS score and get actionable feedback.</p>
-                        <Link to="/resume" className="bg-primary text-primary-foreground font-bold px-6 py-2 rounded-xl hover:bg-primary/90 transition-all">
+                        <Link to="/resume" className="bg-primary text-primary-foreground font-bold px-6 py-2 rounded-xl btn-primary">
                             Analyze Resume Now
                         </Link>
                     </div>
@@ -115,19 +115,19 @@ export const Dashboard = () => {
                 <div className="glass rounded-2xl p-6 flex flex-col col-span-2">
                     <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Link to="/resume" className="p-4 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
+                        <Link to="/resume" className="p-4 rounded-xl border border-border bg-card card-interactive flex flex-col items-center gap-2 text-center">
                             <FileText size={32} className="text-primary" />
                             <span className="font-medium">Analyze Resume</span>
                         </Link>
-                        <Link to="/chat" className="p-4 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
+                        <Link to="/chat" className="p-4 rounded-xl border border-border bg-card card-interactive flex flex-col items-center gap-2 text-center">
                             <Brain size={32} className="text-primary" />
                             <span className="font-medium">Ask AI Coach</span>
                         </Link>
-                        <Link to="/roadmap" className="p-4 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
+                        <Link to="/roadmap" className="p-4 rounded-xl border border-border bg-card card-interactive flex flex-col items-center gap-2 text-center">
                             <Briefcase size={32} className="text-primary" />
                             <span className="font-medium">Build Roadmap</span>
                         </Link>
-                        <Link to="/knowledge" className="p-4 rounded-xl border border-border bg-card hover:bg-accent hover:border-primary transition-colors flex flex-col items-center gap-2 text-center">
+                        <Link to="/knowledge" className="p-4 rounded-xl border border-border bg-card card-interactive flex flex-col items-center gap-2 text-center">
                             <BookOpen size={32} className="text-primary" />
                             <span className="font-medium">Add Knowledge</span>
                         </Link>
@@ -137,7 +137,7 @@ export const Dashboard = () => {
                 <div className="glass rounded-2xl p-6">
                     <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Activity size={20} className="text-primary"/> System Status</h2>
                     <div className="flex flex-col gap-3">
-                        <div className="p-3 rounded-lg bg-card border border-border flex justify-between items-center">
+                        <div className="p-3 rounded-lg bg-card border border-border flex justify-between items-center card-subtle">
                             <div className="flex items-center gap-2">
                                 <Server size={18} className="text-muted-foreground" />
                                 <span>API Backend</span>
@@ -148,7 +148,7 @@ export const Dashboard = () => {
                                 </span>
                             )}
                         </div>
-                        <div className="p-3 rounded-lg bg-card border border-border flex justify-between items-center">
+                        <div className="p-3 rounded-lg bg-card border border-border flex justify-between items-center card-subtle">
                             <div className="flex items-center gap-2">
                                 <Brain size={18} className="text-muted-foreground" />
                                 <span>Gemini AI</span>
@@ -159,7 +159,7 @@ export const Dashboard = () => {
                                 </span>
                             )}
                         </div>
-                        <div className="p-3 rounded-lg bg-card border border-border flex justify-between items-center">
+                        <div className="p-3 rounded-lg bg-card border border-border flex justify-between items-center card-subtle">
                             <div className="flex items-center gap-2">
                                 <Database size={18} className="text-muted-foreground" />
                                 <span>ChromaDB Vector</span>

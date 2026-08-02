@@ -101,7 +101,7 @@ export const Chat = () => {
                 <button
                     onClick={handleClearChat}
                     disabled={messages.length === 0 || isFetchingHistory}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-xl transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 rounded-xl font-medium btn-danger disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <Trash2 size={18} />
                     Clear Chat
@@ -169,13 +169,13 @@ export const Chat = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask a question about your documents..."
-                            className="flex-1 bg-background border border-border rounded-xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            className="flex-1 bg-background border border-border rounded-xl px-6 py-4 input-interactive"
                             disabled={isLoading || isFetchingHistory}
                         />
                         <button
                             type="submit"
                             disabled={isLoading || isFetchingHistory || !input.trim()}
-                            className="bg-primary text-primary-foreground p-4 rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                            className="bg-primary text-primary-foreground p-4 rounded-xl btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                         >
                             <Send size={24} />
                         </button>

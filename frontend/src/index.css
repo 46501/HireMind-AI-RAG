@@ -79,3 +79,118 @@
 .glass {
   @apply bg-card/80 backdrop-blur-md border border-border;
 }
+
+/* ──────────────────────────────────────────────────────────
+   PREMIUM INTERACTION DESIGN SYSTEM
+   Smooth, consistent hover / focus / active states inspired
+   by ChatGPT, Linear, Notion, and Vercel.
+   ────────────────────────────────────────────────────────── */
+
+@layer components {
+
+  /* ── Interactive Card ─────────────────────────────────── */
+  .card-interactive {
+    @apply transition-all duration-[250ms] ease-out cursor-pointer
+           hover:shadow-md hover:-translate-y-0.5 hover:border-primary/40
+           active:scale-[0.98] active:shadow-sm
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  /* ── Subtle Card (list items, status rows) ────────────── */
+  .card-subtle {
+    @apply transition-all duration-200 ease-out
+           hover:bg-accent hover:border-primary/30 hover:shadow-sm
+           active:bg-accent/70
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50;
+  }
+
+  /* ── Primary Button ──────────────────────────────────── */
+  .btn-primary {
+    @apply transition-all duration-[250ms] ease-out cursor-pointer
+           hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5
+           active:scale-[0.97] active:shadow-md active:translate-y-0
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none disabled:active:scale-100
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  /* ── Ghost / Secondary Button ────────────────────────── */
+  .btn-ghost {
+    @apply transition-all duration-200 ease-out cursor-pointer
+           hover:bg-accent hover:text-accent-foreground
+           active:bg-accent/70 active:scale-[0.97]
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50;
+  }
+
+  /* ── Danger / Destructive Button ─────────────────────── */
+  .btn-danger {
+    @apply transition-all duration-200 ease-out cursor-pointer
+           hover:bg-red-500/20 hover:text-red-600 dark:hover:text-red-400
+           active:bg-red-500/30 active:scale-[0.97]
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50;
+  }
+
+  /* ── Icon Button (small, round) ──────────────────────── */
+  .btn-icon {
+    @apply transition-all duration-200 ease-out cursor-pointer
+           hover:bg-accent hover:text-accent-foreground hover:scale-110
+           active:scale-95
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50;
+  }
+
+  /* ── Text Input / Textarea / Select ──────────────────── */
+  .input-interactive {
+    @apply transition-all duration-200 ease-out
+           hover:border-primary/40
+           focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary;
+  }
+
+  /* ── Upload / Dropzone ───────────────────────────────── */
+  .dropzone-interactive {
+    @apply transition-all duration-[250ms] ease-out cursor-pointer
+           hover:border-primary/50 hover:bg-accent hover:shadow-sm
+           active:scale-[0.99]
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  /* ── Tab Button ──────────────────────────────────────── */
+  .tab-interactive {
+    @apply transition-all duration-200 ease-out cursor-pointer
+           hover:text-foreground hover:bg-accent/50
+           active:bg-accent/70
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-inset;
+  }
+
+  /* ── Accordion Trigger ───────────────────────────────── */
+  .accordion-trigger {
+    @apply transition-all duration-200 ease-out cursor-pointer
+           hover:bg-accent hover:text-accent-foreground
+           active:bg-accent/70
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-inset;
+  }
+
+  /* ── Badge / Chip (hover variant) ────────────────────── */
+  .badge-interactive {
+    @apply transition-all duration-200 ease-out cursor-default
+           hover:shadow-sm hover:scale-105
+           active:scale-100;
+  }
+
+  /* ── Sidebar Nav Item ────────────────────────────────── */
+  .nav-item {
+    @apply transition-all duration-200 ease-out cursor-pointer
+           hover:bg-accent hover:text-accent-foreground hover:translate-x-0.5
+           active:bg-accent/70 active:translate-x-0
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-inset;
+  }
+  .nav-item-active {
+    @apply bg-primary/10 text-primary font-medium
+           shadow-sm shadow-primary/5;
+  }
+
+  /* ── Link with underline animation ───────────────────── */
+  .link-interactive {
+    @apply transition-colors duration-200 ease-out cursor-pointer
+           hover:text-primary
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:rounded-sm;
+  }
+}

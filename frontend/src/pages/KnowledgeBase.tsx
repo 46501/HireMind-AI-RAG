@@ -89,8 +89,8 @@ export const KnowledgeBase = () => {
                     </h2>
                     <div 
                         {...getRootProps()} 
-                        className={`min-h-[300px] border-2 border-dashed rounded-3xl flex flex-col items-center justify-center p-8 transition-colors cursor-pointer ${
-                            isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-accent"
+                        className={`min-h-[300px] border-2 border-dashed rounded-3xl flex flex-col items-center justify-center p-8 cursor-pointer dropzone-interactive ${
+                            isDragActive ? "border-primary bg-primary/5" : "border-border"
                         }`}
                     >
                         <input {...getInputProps()} />
@@ -146,7 +146,7 @@ export const KnowledgeBase = () => {
                         ) : (
                             <div className="flex flex-col gap-2">
                                 {documents.map((doc, i) => (
-                                    <div key={i} className="p-4 rounded-2xl bg-background border border-border flex items-center justify-between group hover:border-primary/50 transition-colors">
+                                    <div key={i} className="p-4 rounded-2xl bg-background border border-border flex items-center justify-between group card-subtle">
                                         <div className="flex items-center gap-4 overflow-hidden">
                                             <div className="bg-primary/10 text-primary p-3 rounded-xl shrink-0">
                                                 <File size={20} />
@@ -160,7 +160,7 @@ export const KnowledgeBase = () => {
                                         </div>
                                         <button 
                                             onClick={() => handleDelete(doc.filename)}
-                                            className="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                                            className="p-2 text-muted-foreground rounded-lg btn-danger opacity-0 group-hover:opacity-100"
                                             title="Delete Document"
                                         >
                                             <Trash2 size={18} />

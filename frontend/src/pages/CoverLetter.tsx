@@ -109,8 +109,8 @@ export const CoverLetter = () => {
                                 <label className="block text-sm font-medium mb-2 text-foreground/80">Your Resume (PDF/DOCX) *</label>
                                 <div 
                                     {...getResumeProps()} 
-                                    className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all ${
-                                        resumeFile ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-accent"
+                                    className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer dropzone-interactive ${
+                                        resumeFile ? "border-primary bg-primary/5" : "border-border"
                                     }`}
                                 >
                                     <input {...getResumeInput()} />
@@ -132,8 +132,8 @@ export const CoverLetter = () => {
                                 <label className="block text-sm font-medium mb-2 text-foreground/80">Target Job Description (Optional)</label>
                                 <div 
                                     {...getJDProps()} 
-                                    className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all ${
-                                        jdFile ? "border-primary bg-primary/5" : "border-border hover:border-primary/50 hover:bg-accent"
+                                    className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer dropzone-interactive ${
+                                        jdFile ? "border-primary bg-primary/5" : "border-border"
                                     }`}
                                 >
                                     <input {...getJDInput()} />
@@ -163,7 +163,7 @@ export const CoverLetter = () => {
                             <select 
                                 value={tone}
                                 onChange={(e) => setTone(e.target.value)}
-                                className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-sm input-interactive"
                             >
                                 <option value="Professional">Professional & Formal</option>
                                 <option value="Confident">Confident & Assertive</option>
@@ -176,7 +176,7 @@ export const CoverLetter = () => {
                     <button
                         onClick={handleGenerate}
                         disabled={!resumeFile || isGenerating}
-                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3.5 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/30"
+                        className="w-full bg-primary text-primary-foreground py-3.5 rounded-xl font-bold btn-primary flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                     >
                         {isGenerating ? (
                             <>
@@ -211,7 +211,7 @@ export const CoverLetter = () => {
                                 <div className="flex items-center gap-2">
                                     <button 
                                         onClick={copyToClipboard}
-                                        className="p-2 bg-background hover:bg-accent hover:text-accent-foreground border rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
+                                        className="p-2 bg-background border rounded-lg flex items-center gap-2 text-sm font-medium btn-ghost"
                                         title="Copy to Clipboard"
                                     >
                                         <Copy size={16} />
@@ -219,7 +219,7 @@ export const CoverLetter = () => {
                                     </button>
                                     <button 
                                         onClick={handleDownloadPDF}
-                                        className="p-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium shadow-sm"
+                                        className="p-2 bg-primary text-primary-foreground rounded-lg flex items-center gap-2 text-sm font-medium shadow-sm btn-primary"
                                         title="Download as PDF"
                                     >
                                         <Download size={16} />

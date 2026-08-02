@@ -68,7 +68,7 @@ export const InterviewPrep = () => {
                                 placeholder="e.g. Google, Microsoft, Startup Inc..."
                                 value={company}
                                 onChange={(e) => setCompany(e.target.value)}
-                                className="bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="bg-background border border-border rounded-xl px-4 py-3 input-interactive"
                                 required
                             />
                         </div>
@@ -82,7 +82,7 @@ export const InterviewPrep = () => {
                                 placeholder="e.g. Frontend Engineer, Product Manager..."
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
-                                className="bg-background border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                                className="bg-background border border-border rounded-xl px-4 py-3 input-interactive"
                                 required
                             />
                         </div>
@@ -93,7 +93,7 @@ export const InterviewPrep = () => {
                             </label>
                             <div className="flex gap-4">
                                 {["Entry Level", "Intermediate", "Senior"].map(level => (
-                                    <label key={level} className={`flex-1 flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-colors ${difficulty === level ? 'bg-primary text-primary-foreground border-primary' : 'bg-background border-border hover:border-primary/50'}`}>
+                                    <label key={level} className={`flex-1 flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-all duration-200 ${difficulty === level ? 'bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/20' : 'bg-background border-border hover:border-primary/50 hover:bg-accent active:scale-[0.97]'}`}>
                                         <input 
                                             type="radio" 
                                             name="difficulty" 
@@ -117,7 +117,7 @@ export const InterviewPrep = () => {
                         <button
                             type="submit"
                             disabled={isLoading || !company || !role}
-                            className="bg-primary text-primary-foreground font-bold text-lg px-8 py-4 rounded-2xl hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 mt-4 shadow-lg"
+                            className="bg-primary text-primary-foreground font-bold text-lg px-8 py-4 rounded-2xl btn-primary flex items-center justify-center gap-3 mt-4 shadow-lg"
                         >
                             {isLoading ? (
                                 <>
@@ -141,7 +141,7 @@ export const InterviewPrep = () => {
                         </div>
                         <button 
                             onClick={() => {setQuestions(null); setExpandedQ(null);}}
-                            className="px-4 py-2 bg-background border border-border rounded-xl text-sm font-medium hover:border-primary transition-colors"
+                            className="px-4 py-2 bg-background border border-border rounded-xl text-sm font-medium btn-ghost"
                         >
                             New Setup
                         </button>
@@ -153,7 +153,7 @@ export const InterviewPrep = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => { setActiveTab(tab.id); setExpandedQ(null); }}
-                                className={`px-6 py-4 font-bold text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                                className={`px-6 py-4 font-bold text-sm whitespace-nowrap border-b-2 tab-interactive ${activeTab === tab.id ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
                             >
                                 {tab.label} ({questions[tab.key]?.length || 0})
                             </button>
@@ -171,7 +171,7 @@ export const InterviewPrep = () => {
                                 className="glass rounded-2xl border border-border overflow-hidden shadow-sm"
                             >
                                 <div 
-                                    className="p-6 cursor-pointer flex justify-between items-center hover:bg-accent hover:text-accent-foreground transition-colors"
+                                    className="p-6 cursor-pointer flex justify-between items-center accordion-trigger"
                                     onClick={() => setExpandedQ(expandedQ === i ? null : i)}
                                 >
                                     <h3 className="font-bold text-lg pr-4">{i + 1}. {q.question}</h3>

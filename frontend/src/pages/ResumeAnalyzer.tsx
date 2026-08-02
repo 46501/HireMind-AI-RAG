@@ -15,7 +15,7 @@ const SectionAccordion = ({ title, data }: { title: string, data: any }) => {
         <div className="border border-border rounded-2xl overflow-hidden bg-card mb-4">
             <button 
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between p-5 hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="w-full flex items-center justify-between p-5 accordion-trigger"
             >
                 <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full ${data.present ? (data.issues?.length > 0 ? 'bg-orange-500' : 'bg-green-500') : 'bg-red-500'}`} />
@@ -180,7 +180,7 @@ export const ResumeAnalyzer = () => {
                 {results && (
                     <button 
                         onClick={handleDownloadPDF}
-                        className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-xl transition-colors font-bold"
+                        className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl font-bold btn-ghost"
                     >
                         <Download size={18} /> Download Report
                     </button>
@@ -192,7 +192,7 @@ export const ResumeAnalyzer = () => {
                     {/* Upload UI remains mostly same but supports docx */}
                     <div className="flex flex-col gap-4">
                         <h2 className="text-xl font-bold">1. Upload Resume (Required)</h2>
-                        <div {...getResumeProps()} className={`border-2 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center text-center cursor-pointer transition-colors min-h-[250px] ${resumeFile ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-accent'}`}>
+                        <div {...getResumeProps()} className={`border-2 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center text-center cursor-pointer dropzone-interactive min-h-[250px] ${resumeFile ? 'border-primary bg-primary/5' : 'border-border'}`}>
                             <input {...getResumeInput()} />
                             {resumeFile ? (
                                 <>
@@ -212,7 +212,7 @@ export const ResumeAnalyzer = () => {
 
                     <div className="flex flex-col gap-4">
                         <h2 className="text-xl font-bold">2. Target Job Description (Optional)</h2>
-                        <div {...getJDProps()} className={`border-2 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center text-center cursor-pointer transition-colors min-h-[250px] ${jdFile ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-accent'}`}>
+                        <div {...getJDProps()} className={`border-2 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center text-center cursor-pointer dropzone-interactive min-h-[250px] ${jdFile ? 'border-primary bg-primary/5' : 'border-border'}`}>
                             <input {...getJDInput()} />
                             {jdFile ? (
                                 <>
@@ -240,7 +240,7 @@ export const ResumeAnalyzer = () => {
                         <button
                             onClick={handleAnalyze}
                             disabled={!resumeFile || isAnalyzing}
-                            className="bg-primary text-primary-foreground font-bold text-lg px-12 py-4 rounded-2xl hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-1"
+                            className="bg-primary text-primary-foreground font-bold text-lg px-12 py-4 rounded-2xl btn-primary flex items-center gap-3 shadow-lg"
                         >
                             {isAnalyzing ? (
                                 <>
@@ -364,7 +364,7 @@ export const ResumeAnalyzer = () => {
                     <div className="flex justify-center mt-4">
                         <button 
                             onClick={() => { setResults(null); setResumeFile(null); setJdFile(null); setLatestFilename(null); }}
-                            className="text-muted-foreground hover:text-foreground font-medium underline"
+                            className="text-muted-foreground font-medium underline link-interactive"
                         >
                             Upload another resume
                         </button>
