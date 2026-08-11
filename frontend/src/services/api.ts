@@ -16,9 +16,80 @@ export const uploadKnowledge = async (file: File, category: string = "general") 
     return response.data;
 };
 
-export const chatWithKB = async (query: string) => {
-    const response = await api.post("/chat", { query });
-    return response.data;
+export const chatWithKB = async (query: string, onUpdate?: (chunk: string) => void) => {
+    try {
+        const response = await fetch(`${API_BASE}/chat`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query }),
+        });
+
+        if (!response.ok) {
+            let errorDetail = "An unexpected error occurred.";
+            try {
+                const errData = await response.json();
+                errorDetail = errData.detail || errorDetail;
+            } catch (e) {}
+            return { error: errorDetail };
+        }
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let done = false;
+        let fullAnswer = "";
+        let sources: any[] = [];
+        let metrics: any = {};
+
+        if (reader) {
+            while (!done) {
+                const { value, done: readerDone } = await reader.read();
+                done = readerDone;
+                if (value) {
+                    const chunk = decoder.decode(value, { stream: !done });
+                    // Check for metadata chunk
+                    if (chunk.includes("\n\n__METADATA__:Title:") || chunk.includes("__METADATA__:{\"sources\"")) {
+                        const parts = chunk.split("\n\n__METADATA__:");
+                        if (parts[0]) {
+                            fullAnswer += parts[0];
+                            if (onUpdate) onUpdate(parts[0]);
+                        }
+                        if (parts[1]) {
+                            try {
+                                const metadata = JSON.parse(parts[1]);
+                                sources = metadata.sources || [];
+                                metrics = metadata.metrics || {};
+                            } catch (e) {
+                                console.error("Error parsing metadata:", e);
+                            }
+                        }
+                    } else if (chunk.includes("__METADATA__:{\"sources\"")) {
+                         // handle cases where metadata starts chunk
+                         const parts = chunk.split("__METADATA__:");
+                         if (parts[0]) {
+                             fullAnswer += parts[0];
+                             if (onUpdate) onUpdate(parts[0]);
+                         }
+                         if (parts[1]) {
+                             try {
+                                 const metadata = JSON.parse(parts[1]);
+                                 sources = metadata.sources || [];
+                                 metrics = metadata.metrics || {};
+                             } catch (e) {
+                                 console.error("Error parsing metadata:", e);
+                             }
+                         }
+                    } else {
+                        fullAnswer += chunk;
+                        if (onUpdate) onUpdate(chunk);
+                    }
+                }
+            }
+        }
+        
+        return { answer: fullAnswer, sources, metrics };
+    } catch (error: any) {
+        return { error: error.message || "Failed to connect to the server." };
+    }
 };
 
 export const getChatHistory = async () => {

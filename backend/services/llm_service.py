@@ -57,3 +57,20 @@ class LLMService:
             if "429" in str(e):
                 raise ValueError("API rate limit exceeded. Please try again in a minute.")
             raise
+
+    @staticmethod
+    def generate_content_stream(prompt: str):
+        """Generate content from Gemini model based on a prompt, returning a stream."""
+        if not settings.GEMINI_API_KEY:
+            raise ValueError("GEMINI_API_KEY is not set.")
+            
+        model = genai.GenerativeModel(LLM_MODEL_NAME)
+        try:
+            response = model.generate_content(prompt, stream=True)
+            for chunk in response:
+                yield chunk.text
+        except Exception as e:
+            if "429" in str(e):
+                raise ValueError("API rate limit exceeded. Please try again in a minute.")
+            raise
+

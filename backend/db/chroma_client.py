@@ -6,14 +6,18 @@ from core.config import settings
 chroma_client = chromadb.PersistentClient(path=settings.CHROMA_DB_DIR)
 
 class ChromaDBService:
+    _collections = {}
+
     @staticmethod
     def get_or_create_collection(collection_name: str):
         """Retrieve an existing collection or create a new one."""
-        # Using cosine distance for embeddings similarity
-        return chroma_client.get_or_create_collection(
-            name=collection_name,
-            metadata={"hnsw:space": "cosine"}
-        )
+        if collection_name not in ChromaDBService._collections:
+            # Using cosine distance for embeddings similarity
+            ChromaDBService._collections[collection_name] = chroma_client.get_or_create_collection(
+                name=collection_name,
+                metadata={"hnsw:space": "cosine"}
+            )
+        return ChromaDBService._collections[collection_name]
 
     @staticmethod
     def add_documents(collection_name: str, ids: list[str], embeddings: list[list[float]], metadatas: list[dict], documents: list[str]):

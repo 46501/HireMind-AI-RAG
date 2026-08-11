@@ -6,6 +6,11 @@ interface Message {
     role: "user" | "ai";
     content: string;
     sources?: any[];
+    metrics?: {
+        retrieval_time: number;
+        llm_time: number;
+        total_time: number;
+    };
 }
 
 export const Chat = () => {
@@ -59,31 +64,55 @@ export const Chat = () => {
 
         const userMsg = input.trim();
         setInput("");
-        setMessages(prev => [...prev, { role: "user", content: userMsg }]);
+        
+        // Add user message and empty AI message
+        setMessages(prev => [
+            ...prev, 
+            { role: "user", content: userMsg },
+            { role: "ai", content: "" } // Placeholder for streaming
+        ]);
         setIsLoading(true);
 
         try {
-            const res = await chatWithKB(userMsg);
+            const res = await chatWithKB(userMsg, (chunk) => {
+                // Remove the "Thinking..." indicator on first chunk
+                setIsLoading(false);
+                
+                // Update the last message (which is the AI placeholder) with new chunks
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    const lastMsgIndex = newMessages.length - 1;
+                    if (newMessages[lastMsgIndex].role === "ai") {
+                        newMessages[lastMsgIndex].content += chunk;
+                    }
+                    return newMessages;
+                });
+            });
             
             if (res.error) {
-                setMessages(prev => [...prev, { 
-                    role: "ai", 
-                    content: `Error: ${res.error}` 
-                }]);
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    newMessages[newMessages.length - 1].content = `Error: ${res.error}`;
+                    return newMessages;
+                });
             } else {
-                setMessages(prev => [...prev, { 
-                    role: "ai", 
-                    content: res.answer,
-                    sources: res.sources
-                }]);
+                // Finalize message with sources and metrics
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    const lastMsgIndex = newMessages.length - 1;
+                    newMessages[lastMsgIndex].sources = res.sources;
+                    newMessages[lastMsgIndex].metrics = res.metrics;
+                    return newMessages;
+                });
             }
         } catch (error: any) {
             console.error(error);
-            const errorMessage = error.response?.data?.detail || "Sorry, I encountered an error connecting to the knowledge base. Please check the backend connection.";
-            setMessages(prev => [...prev, { 
-                role: "ai", 
-                content: errorMessage 
-            }]);
+            const errorMessage = error.response?.data?.detail || "Sorry, I encountered an error connecting to the knowledge base.";
+            setMessages(prev => {
+                const newMessages = [...prev];
+                newMessages[newMessages.length - 1].content = errorMessage;
+                return newMessages;
+            });
         } finally {
             setIsLoading(false);
         }
@@ -139,6 +168,13 @@ export const Chat = () => {
                                         <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1 px-2">
                                             <BookOpen size={14} />
                                             <span>Sources: {Array.from(new Set(msg.sources.map((s:any) => s.filename))).join(", ")}</span>
+                                        </div>
+                                    )}
+                                    
+                                    {/* Metrics */}
+                                    {msg.metrics && msg.metrics.total_time > 0 && (
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground px-2 opacity-70">
+                                            <span>⏱️ Retrieval: {msg.metrics.retrieval_time}s | LLM: {msg.metrics.llm_time}s | Total: {msg.metrics.total_time}s</span>
                                         </div>
                                     )}
                                 </div>

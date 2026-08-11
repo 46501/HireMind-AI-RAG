@@ -1,6 +1,8 @@
 import os
 import logging
+import json
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, status
+from fastapi.responses import StreamingResponse
 from typing import Optional
 from pydantic import BaseModel
 from services.rag_service import RAGService
@@ -80,25 +82,45 @@ from db.ats_store import AtsStore
 
 @router.post("/chat")
 async def chat_with_knowledge(request: ChatRequest):
-    """Chat with the AI using RAG context."""
+    """Chat with the AI using RAG context (Streaming)."""
     try:
         # Save user message
         ChatStore.add_message(role="user", content=request.query)
         
-        # Get AI response
-        result = RAGService.query_knowledge_base(request.query)
+        def stream_generator():
+            full_answer = ""
+            sources = []
+            metrics = {}
+            try:
+                for chunk in RAGService.query_knowledge_base_stream(request.query):
+                    if isinstance(chunk, str) and chunk.startswith("\n\n__METADATA__:"):
+                        metadata_str = chunk.replace("\n\n__METADATA__:", "")
+                        try:
+                            metadata = json.loads(metadata_str)
+                            sources = metadata.get("sources", [])
+                            metrics = metadata.get("metrics", {})
+                        except:
+                            pass
+                        yield chunk # Yield the metadata chunk for frontend
+                    else:
+                        full_answer += chunk
+                        yield chunk
+                        
+                # Save AI message after stream completes
+                if full_answer:
+                    ChatStore.add_message(role="ai", content=full_answer, sources=sources)
+            except Exception as e:
+                logger.error(f"Error during stream generation: {e}")
+                yield f"\n[Stream interrupted: {e}]"
+                
+        return StreamingResponse(stream_generator(), media_type="text/plain")
         
-        # Save AI message
-        if "error" not in result:
-            ChatStore.add_message(role="ai", content=result.get("answer", ""), sources=result.get("sources", []))
-            
-        return result
     except ValueError as ve:
         logger.error(f"Validation error in chat_with_knowledge: {ve}")
-        return {"error": str(ve)}
+        raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         logger.error(f"Error in chat_with_knowledge: {e}")
-        return {"error": "An unexpected error occurred while processing your request."}
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
 @router.get("/chat/history")
 async def get_chat_history():

@@ -75,6 +75,9 @@ class RAGService:
     @staticmethod
     def query_knowledge_base(query: str, n_results: int = 3):
         """Query the knowledge base and return augmented answer."""
+        import time
+        start_retrieval = time.time()
+        
         # 1. Generate query embedding
         query_embedding = LLMService.get_query_embedding(query)
         
@@ -85,10 +88,13 @@ class RAGService:
             n_results=n_results
         )
         
+        retrieval_time = time.time() - start_retrieval
+        
         if not results.get('documents') or not results['documents'][0]:
             return {
                 "answer": "The answer was not found in the uploaded documents.",
-                "sources": []
+                "sources": [],
+                "metrics": {"retrieval_time": round(retrieval_time, 2), "llm_time": 0.0, "total_time": round(retrieval_time, 2)}
             }
             
         # 3. Construct prompt with context
@@ -109,12 +115,80 @@ User Question: {query}
 """
         
         # 4. Generate answer using Gemini
+        start_llm = time.time()
         answer = LLMService.generate_content(prompt)
+        llm_time = time.time() - start_llm
+        
+        total_time = retrieval_time + llm_time
+        logger.info(f"Performance: Retrieval: {retrieval_time:.2f}s, LLM: {llm_time:.2f}s, Total: {total_time:.2f}s")
         
         return {
             "answer": answer,
-            "sources": sources
+            "sources": sources,
+            "metrics": {"retrieval_time": round(retrieval_time, 2), "llm_time": round(llm_time, 2), "total_time": round(total_time, 2)}
         }
+
+    @staticmethod
+    def query_knowledge_base_stream(query: str, n_results: int = 3):
+        """Query the knowledge base and yield augmented answer stream with metadata at the end."""
+        import time
+        import json
+        start_retrieval = time.time()
+        
+        try:
+            query_embedding = LLMService.get_query_embedding(query)
+            
+            results = ChromaDBService.search_documents(
+                collection_name=KNOWLEDGE_BASE_COLLECTION,
+                query_embedding=query_embedding,
+                n_results=n_results
+            )
+            
+            retrieval_time = time.time() - start_retrieval
+            
+            if not results.get('documents') or not results['documents'][0]:
+                yield "The answer was not found in the uploaded documents."
+                yield f"\n\n__METADATA__:{json.dumps({'sources': [], 'metrics': {'retrieval_time': round(retrieval_time, 2), 'llm_time': 0.0, 'total_time': round(retrieval_time, 2)}})}"
+                return
+                
+            context_chunks = results['documents'][0]
+            sources = results['metadatas'][0]
+            
+            context_text = "\n\n".join([f"--- Source: {sources[i]['filename']} ---\n{chunk}" for i, chunk in enumerate(context_chunks)])
+            
+            prompt = f"""
+You are an expert Career Coach and AI Assistant. 
+Answer the user's question based strictly on the provided context from their knowledge base.
+If the information is not present in the context, say "The answer was not found in the uploaded documents." Do not hallucinate outside the context.
+
+Context:
+{context_text}
+
+User Question: {query}
+"""
+            
+            start_llm = time.time()
+            for chunk in LLMService.generate_content_stream(prompt):
+                yield chunk
+                
+            llm_time = time.time() - start_llm
+            total_time = retrieval_time + llm_time
+            logger.info(f"Performance: Retrieval: {retrieval_time:.2f}s, LLM: {llm_time:.2f}s, Total: {total_time:.2f}s")
+            
+            metadata = {
+                "sources": sources,
+                "metrics": {
+                    "retrieval_time": round(retrieval_time, 2), 
+                    "llm_time": round(llm_time, 2), 
+                    "total_time": round(total_time, 2)
+                }
+            }
+            yield f"\n\n__METADATA__:{json.dumps(metadata)}"
+            
+        except Exception as e:
+            logger.error(f"Error in stream: {e}")
+            yield f"\nAn error occurred while generating the response: {str(e)}"
+
 
     @staticmethod
     def get_uploaded_documents():
