@@ -17,11 +17,9 @@ export const Sidebar = () => {
 
     return (
         <aside className="w-64 h-screen border-r border-border bg-card flex flex-col p-4 shrink-0">
-            <div className="flex items-center gap-2 mb-8 px-2">
-                <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
-                    <Briefcase size={24} />
-                </div>
-                <h1 className="text-xl font-bold tracking-tight">HireMind AI</h1>
+            <div className="flex items-center justify-center mb-8 px-2">
+                <img src="/logo-light.png" alt="HireMind AI" className="h-10 dark:hidden" />
+                <img src="/logo-dark.png" alt="HireMind AI" className="h-10 hidden dark:block" />
             </div>
 
             <nav className="flex-1 flex flex-col gap-2">

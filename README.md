@@ -1,4 +1,8 @@
-# HireMind AI – AI Career Assistant
+<div align="center">
+  <img src="frontend/public/logo-light.png" alt="HireMind AI Logo" width="400"/>
+</div>
+
+# HireMind AI 🚀 AI Career Assistant
 
 HireMind AI is a production-ready AI-Powered Career Assistant platform built using React (Vite), FastAPI, ChromaDB, and Google Gemini. The platform uses a Retrieval-Augmented Generation (RAG) engine to provide intelligent career advice, parse resumes, identify skill gaps, and generate roadmaps.
 

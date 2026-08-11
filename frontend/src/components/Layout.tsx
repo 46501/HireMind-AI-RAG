@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { ThemeToggle } from "./ThemeToggle";
-import { Briefcase } from "lucide-react";
+
 
 export const Layout = () => {
     return (
@@ -11,9 +11,7 @@ export const Layout = () => {
                 <header className="h-16 shrink-0 border-b border-border bg-card flex items-center justify-between px-6 z-10 shadow-sm">
                     {/* Mobile/Alternative Logo Area (optional) */}
                     <div className="flex items-center gap-2 md:hidden">
-                        <div className="bg-primary text-primary-foreground p-1 rounded-md">
-                            <Briefcase size={20} />
-                        </div>
+                        <img src="/icon.png" alt="HireMind AI Logo" className="h-8 w-8 object-contain" />
                         <span className="font-bold">HireMind AI</span>
                     </div>
                     <div className="hidden md:block"></div> {/* Spacer for desktop */}

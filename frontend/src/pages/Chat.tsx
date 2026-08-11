@@ -119,7 +119,7 @@ export const Chat = () => {
                         </div>
                     ) : messages.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center opacity-50">
-                            <Bot size={64} className="mb-4 text-primary" />
+                            <img src="/icon.png" alt="HireMind AI" className="h-16 w-16 mb-4 object-contain" />
                             <h2 className="text-2xl font-bold mb-2">How can I help you today?</h2>
                             <p className="max-w-md">I have access to your uploaded knowledge base. Ask me about your study notes, interview prep, or career advice.</p>
                         </div>
